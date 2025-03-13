@@ -1,255 +1,156 @@
-<script setup>
-import { ref, computed } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
+import Input from "@/components/ui/input/Input.vue";
+import { Button } from "@/components/ui/button";
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldInput,
+} from "@/components/ui/number-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
+import Slider from "@/components/ui/slider/Slider.vue";
+import DarkToggle from "./components/DarkToggle.vue";
+import { Plus, Download, Printer } from "lucide-vue-next";
 
 const title = ref("IARU R1 HF Bandplan");
 
-const band10m = ref({
-  title: "28MHz",
-  subtitle: "10m",
-  start: 28000,
-  end: 29700,
-});
+const tickCount = ref([34]);
 
-const bandLineStart = 120;
-const bandLineEnd = 1143;
+const accordionValue = ref();
 
-// Utility: rounds a number x to a “nice” number using a 1–2–5–10 scheme.
-function getNiceNumber(x) {
-  const exp = Math.floor(Math.log10(x));
-  const fraction = x / Math.pow(10, exp);
-  const niceFractions = [1, 2, 5, 10];
-  const niceFraction = niceFractions.find((n) => fraction < n * 1.5);
-  return niceFraction * Math.pow(10, exp);
-}
+const bands = ref([
+  {
+    title: "28MHz",
+    subtitle: "10m",
+    start: 28000,
+    end: 29700,
+  },
+  {
+    title: "24MHz",
+    subtitle: "12m",
+    start: 28000,
+    end: 29700,
+  },
+]);
 
-// Frequency range of the band.
-const bandRange = computed(() => band10m.value.end - band10m.value.start);
+const addBand = () => {
+  bands.value = [...bands.value, { title: "", subtitle: "", start: 0, end: 0 }];
 
-const tickCount = ref(34);
+  console.log(accordionValue);
 
-const smallTickSpacing = computed(() => {
-  const rawSpacing = bandRange.value / tickCount.value;
-  return getNiceNumber(rawSpacing);
-});
-
-const bigTickSpacing = computed(() => smallTickSpacing.value * 5);
-
-// Compute first small tick aligned on the grid.
-const firstSmallTick = computed(
-  () =>
-    Math.ceil(band10m.value.start / smallTickSpacing.value) *
-    smallTickSpacing.value
-);
-
-// Generate all small tick frequencies.
-const smallTicks = computed(() => {
-  const first = firstSmallTick.value;
-  const count =
-    Math.floor((band10m.value.end - first) / smallTickSpacing.value) + 1;
-  return Array.from(
-    { length: count },
-    (_, i) => first + i * smallTickSpacing.value
-  );
-});
-
-const firstBigTick = computed(() => {
-  const start =
-    Math.ceil(band10m.value.start / bigTickSpacing.value) *
-    bigTickSpacing.value;
-  return start === band10m.value.start ? start + bigTickSpacing.value : start;
-});
-
-const bigTicks = computed(() => {
-  const first = firstBigTick.value;
-  const count =
-    Math.floor((band10m.value.end - first) / bigTickSpacing.value) + 1;
-  return Array.from(
-    { length: count },
-    (_, i) => first + i * bigTickSpacing.value
-  );
-});
-
-const pixelPerKHz = computed(
-  () => (bandLineEnd - bandLineStart) / bandRange.value
-);
+  accordionValue.value = String(bands.value.length - 1);
+};
 </script>
 
 <template>
-  <main>
-    <input v-model="title" />
-    <p>10m band</p>
-    <input v-model="band10m.title" />
-    <input v-model="band10m.subtitle" />
-    <input v-model="band10m.start" type="number" />
-    <input v-model="band10m.end" type="number" />
-    <input id="scale" type="range" v-model="tickCount" min="10" max="200" />
-    <div class="pdf-preview">
-      <pdfFrame
-        id="band-plan"
-        class="pdf-frame"
-        :info="{ title: 'Bandplan' }"
-        :config="{
-          margin: 48,
-          margins: { top: 40, bottom: 40 },
-          fontRegister: {
-            GeistBlack: 'fonts/Geist-Black.ttf',
-            GeistExtraBold: 'fonts/Geist-ExtraBold.ttf',
-            GeistBold: 'fonts/Geist-Bold.ttf',
-            GeistBold: 'fonts/Geist-SemiBold.ttf',
-            GeistMedium: 'fonts/Geist-Medium.ttf',
-            GeistRegular: 'fonts/Geist-Regular.ttf',
-            GeistLight: 'fonts/Geist-Light.ttf',
-            GeistExtraLight: 'fonts/Geist-ExtraLight.ttf',
-            GeistThin: 'fonts/Geist-Thin.ttf',
-          },
-        }"
-        type="pdf"
-        :width="1191"
-        :height="842"
+  <div class="min-h-svh flex flex-col dark:bg-zinc-950">
+    <header class="border-b border-zinc-200 dark:border-zinc-800">
+      <div
+        class="container mx-auto px-4 h-14 flex items-center justify-between"
       >
-        <i-page>
-          <i-text
-            :width="1143"
-            :text="title"
-            :style="{ fill: '#000', font: '32px GeistBold' }"
-          />
+        <h1 class="font-bold text-lg dark:text-zinc-50">Bandplan generator</h1>
+        <div class="flex gap-2">
+          <Button variant="outline"><Printer class="w-4 h-4" />Print</Button>
+          <Button variant="outline">
+            <Download class="w-4 h-4" /> Download</Button
+          >
+          <DarkToggle />
+        </div>
+      </div>
+    </header>
+    <main
+      class="container flex-1 mx-auto md:grid md:grid-cols-[260px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6"
+    >
+      <aside class="h-[calc(100vh-3.5rem-1px)] overflow-auto no-scrollbar">
+        <div class="flex flex-col gap-4 p-4">
+          <div class="grid w-full max-w-sm items-center gap-1.5">
+            <Label for="input-title">Title</Label>
+            <Input
+              v-model="title"
+              id="input-title"
+              placeholder="Title"
+              class="max-w-sm"
+            />
+          </div>
 
-          <i-text
-            :width="96"
-            :x="20"
-            :y="60"
-            :text="band10m.title"
-            :style="{ fill: '#000', font: '20px GeistBold', align: 'right' }"
-          />
-          <i-text
-            :width="96"
-            :x="20"
-            :y="80"
-            :text="band10m.subtitle"
-            :style="{ fill: '#000', font: '16px GeistBold', align: 'right' }"
-          />
-
-          <!-- Band line -->
-          <i-line
-            :x1="bandLineStart"
-            :y1="80"
-            :x2="bandLineEnd"
-            :y2="80"
-            :style="{ lineWidth: 4 }"
-          />
-
-          <!-- Band start -->
-          <i-line
-            :x1="bandLineStart"
-            :y1="64"
-            :x2="bandLineStart"
-            :y2="112"
-            :style="{ lineWidth: 4 }"
-          />
-
-          <!-- Band start text -->
-          <i-text
-            :x="bandLineStart - 40"
-            :y="44"
-            :width="80"
-            :text="band10m.start.toLocaleString('de-DE')"
-            :style="{ fill: '#000', font: '16px GeistBold', align: 'center' }"
-          />
-
-          <!-- Band big tick labels -->
-          <i-text
-            v-for="tick in bigTicks"
-            :key="tick"
-            :text="tick.toLocaleString('de-DE')"
-            :x="bandLineStart - 40 + (tick - band10m.start) * pixelPerKHz"
-            :y="44"
-            :width="80"
-            :style="{ fill: '#000', font: '16px GeistBold', align: 'center' }"
-          />
-
-          <!-- Band end text -->
-          <i-text
-            :x="bandLineEnd - 40"
-            :y="44"
-            :width="80"
-            :text="band10m.end.toLocaleString('de-DE')"
-            :style="{ fill: '#000', font: '16px GeistBold', align: 'center' }"
-          />
-
-          <!-- Band end -->
-          <i-line
-            :x1="bandLineEnd"
-            :y1="64"
-            :x2="bandLineEnd"
-            :y2="112"
-            :style="{ lineWidth: 4 }"
-          />
-
-          <!-- Small ticks -->
-          <i-line
-            v-for="tick in smallTicks"
-            :key="tick"
-            :x1="bandLineStart + (tick - band10m.start) * pixelPerKHz"
-            :y1="72"
-            :x2="bandLineStart + (tick - band10m.start) * pixelPerKHz"
-            :y2="80"
-            :style="{ lineWidth: 4 }"
-          />
-
-          <!-- Big ticks -->
-          <i-line
-            v-for="tick in bigTicks"
-            :key="tick + '_line'"
-            :x1="bandLineStart + (tick - band10m.start) * pixelPerKHz"
-            :y1="64"
-            :x2="bandLineStart + (tick - band10m.start) * pixelPerKHz"
-            :y2="80"
-            :style="{ lineWidth: 4 }"
-          />
-
-          <!-- CW Green -->
-          <i-line
-            :x1="124"
-            :y1="88"
-            :x2="1139"
-            :y2="88"
-            :style="{ stroke: '#ADD249', lineWidth: 8 }"
-          />
-
-          <!-- PH Red -->
-          <i-line
-            :x1="124"
-            :y1="98"
-            :x2="1139"
-            :y2="98"
-            :style="{ stroke: '#EF2E36', lineWidth: 8 }"
-          />
-
-          <!-- DIGI Blue -->
-          <i-line
-            :x1="124"
-            :y1="108"
-            :x2="1139"
-            :y2="108"
-            :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
-          />
-        </i-page>
-      </pdfFrame>
-    </div>
-  </main>
+          <Accordion type="single" collapsible v-model="accordionValue">
+            <AccordionItem
+              v-for="(band, index) in bands"
+              :key="index"
+              :value="String(index)"
+            >
+              <AccordionTrigger>{{ band.title }}</AccordionTrigger>
+              <AccordionContent class="px-1 grid gap-4">
+                <div class="grid w-full max-w-sm items-center gap-1.5">
+                  <Label :for="`${index}-title`">Band title</Label>
+                  <Input
+                    v-model="band.title"
+                    :id="`${index}-title`"
+                    placeholder="Band title"
+                    class="max-w-sm"
+                  />
+                </div>
+                <div class="grid w-full max-w-sm items-center gap-1.5">
+                  <Label :for="`${index}-subtitle`">Band subtitle</Label>
+                  <Input
+                    v-model="band.subtitle"
+                    :id="`${index}-subtitle`"
+                    placeholder="Band subtitle"
+                    class="max-w-sm"
+                  />
+                </div>
+                <div class="flex gap-2">
+                  <NumberField
+                    :id="`${index}-start`"
+                    v-model="band.start"
+                    locale="de-DE"
+                    :min="0"
+                  >
+                    <Label :for="`${index}-start`">Band start</Label>
+                    <NumberFieldContent class="flex items-center gap-1">
+                      <NumberFieldInput />
+                      <span class="text-zinc-500">kHz</span>
+                    </NumberFieldContent>
+                  </NumberField>
+                  <NumberField
+                    :id="`${index}-end`"
+                    v-model="band.end"
+                    locale="de-DE"
+                    :min="0"
+                  >
+                    <Label :for="`${index}-end`">Band end</Label>
+                    <NumberFieldContent class="flex items-center gap-1">
+                      <NumberFieldInput />
+                      <span class="text-zinc-500">kHz</span>
+                    </NumberFieldContent>
+                  </NumberField>
+                </div>
+                <div class="grid w-full max-w-sm items-center gap-3">
+                  <Label :for="`${index}-scale`">Scale</Label>
+                  <Slider
+                    :id="`${index}-scale`"
+                    v-model="tickCount"
+                    :min="10"
+                    :max="200"
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Button @click="addBand"> <Plus class="w-4 h-4" />Add band</Button>
+        </div>
+      </aside>
+      <div class="w-full h-full p-4">
+        <div
+          class="w-full h-full bg-zinc-200 dark:bg-zinc-800 rounded-lg"
+        ></div>
+      </div>
+    </main>
+  </div>
 </template>
-
-<style scoped>
-main {
-  margin: 0 auto;
-  max-width: 1024px;
-  padding: 0 40px;
-}
-.pdf-frame {
-  border: none;
-}
-.pdf-preview {
-  width: 100%;
-  height: 725px;
-}
-</style>

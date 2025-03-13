@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    @apply text-zinc-950 bg-zinc-50;
+  }
+  .dark {
+    @apply text-zinc-50 bg-zinc-950;
+  }
+}
