@@ -56,7 +56,7 @@ const addBand = () => {
         <div class="flex gap-2">
           <Button variant="outline"><Printer class="w-4 h-4" />Print</Button>
           <Button variant="outline">
-            <Download class="w-4 h-4" /> Download</Button
+            <Download class="w-4 h-4" />PDF</Button
           >
           <DarkToggle />
         </div>
