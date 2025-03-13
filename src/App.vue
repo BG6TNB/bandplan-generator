@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import Input from "@/components/ui/input/Input.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,12 +17,13 @@ import { Label } from "@/components/ui/label";
 import Slider from "@/components/ui/slider/Slider.vue";
 import DarkToggle from "./components/DarkToggle.vue";
 import { Plus, Download, Printer } from "lucide-vue-next";
+import AspectRatio from "./components/ui/aspect-ratio/AspectRatio.vue";
+import PdfFrame from "@i2d/pdf-frame-vue";
 
 const title = ref("IARU R1 HF Bandplan");
-
 const tickCount = ref([34]);
-
 const activeAccordion = ref();
+const pdfBlob = ref();
 
 const bands = ref([
   {
@@ -44,6 +45,27 @@ const addBand = () => {
 
   activeAccordion.value = String(bands.value.length - 1);
 };
+
+const updatePdfBlob = (blob: Blob) => {
+  pdfBlob.value = blob;
+};
+
+const pdfIframeRef = useTemplateRef("pdf-iframe");
+
+const printPdf = () => {
+  pdfIframeRef.value?.contentWindow?.print();
+};
+
+const downloadPdf = () => {
+  if (!pdfBlob.value) return;
+
+  const link = document.createElement("a");
+  link.href = pdfBlob.value;
+  link.download = `${title.value}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 </script>
 
 <template>
@@ -54,9 +76,11 @@ const addBand = () => {
       >
         <h1 class="font-bold text-lg dark:text-zinc-50">Bandplan generator</h1>
         <div class="flex gap-2">
-          <Button variant="outline"><Printer class="w-4 h-4" />Print</Button>
-          <Button variant="outline">
-            <Download class="w-4 h-4" />PDF</Button
+          <Button variant="outline" @click="printPdf"
+            ><Printer class="w-4 h-4" />Print</Button
+          >
+          <Button variant="outline" @click="downloadPdf"
+            ><Download class="w-4 h-4" />PDF</Button
           >
           <DarkToggle />
         </div>
@@ -65,7 +89,7 @@ const addBand = () => {
     <main
       class="container flex-1 mx-auto md:grid md:grid-cols-[260px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6"
     >
-      <aside class="h-[calc(100vh-3.5rem-1px)] overflow-auto no-scrollbar">
+      <aside class="md:h-[calc(100vh-3.5rem-1px)] overflow-auto no-scrollbar">
         <div class="flex flex-col gap-4 p-4">
           <div class="grid w-full max-w-sm items-center gap-1.5">
             <Label for="input-title">Title</Label>
@@ -145,9 +169,52 @@ const addBand = () => {
         </div>
       </aside>
       <div class="w-full h-full p-4">
-        <div
-          class="w-full h-full bg-zinc-200 dark:bg-zinc-800 rounded-lg"
-        ></div>
+        <AspectRatio
+          :ratio="1.414 / 1"
+          class="bg-zinc-100 dark:bg-zinc-900 rounded-lg"
+        >
+          <iframe
+            height="100%"
+            width="100%"
+            class="border-0"
+            ref="pdf-iframe"
+            :src="`${pdfBlob}#view=Fit&scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0`"
+          />
+        </AspectRatio>
+
+        <PdfFrame
+          id="band-plan"
+          :info="{ title: 'Bandplan' }"
+          :config="{
+            margin: 48,
+            margins: { top: 40, bottom: 40 },
+            fontRegister: {
+              GeistBlack: 'fonts/Geist-Black.ttf',
+              GeistExtraBold: 'fonts/Geist-ExtraBold.ttf',
+              GeistBold: 'fonts/Geist-Bold.ttf',
+              GeistSemiBold: 'fonts/Geist-SemiBold.ttf',
+              GeistMedium: 'fonts/Geist-Medium.ttf',
+              GeistRegular: 'fonts/Geist-Regular.ttf',
+              GeistLight: 'fonts/Geist-Light.ttf',
+              GeistExtraLight: 'fonts/Geist-ExtraLight.ttf',
+              GeistThin: 'fonts/Geist-Thin.ttf',
+            },
+          }"
+          class="hidden"
+          type="pdf-blob"
+          :width="1191"
+          :height="842"
+          :needOnUpdated="true"
+          @on-updated="updatePdfBlob"
+        >
+          <i-page>
+            <i-text
+              :width="1143"
+              :text="title"
+              :style="{ fill: '#000', font: '32px GeistBold' }"
+            />
+          </i-page>
+        </PdfFrame>
       </div>
     </main>
   </div>

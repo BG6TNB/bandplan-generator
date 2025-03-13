@@ -1,3 +1,5 @@
+import defaultTheme from "tailwindcss/defaultTheme";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "selector",
@@ -5,6 +7,9 @@ export default {
   safelist: ["dark"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Geist", ...defaultTheme.fontFamily.sans],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
