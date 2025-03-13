@@ -22,7 +22,7 @@ const title = ref("IARU R1 HF Bandplan");
 
 const tickCount = ref([34]);
 
-const accordionValue = ref();
+const activeAccordion = ref();
 
 const bands = ref([
   {
@@ -42,9 +42,7 @@ const bands = ref([
 const addBand = () => {
   bands.value = [...bands.value, { title: "", subtitle: "", start: 0, end: 0 }];
 
-  console.log(accordionValue);
-
-  accordionValue.value = String(bands.value.length - 1);
+  activeAccordion.value = String(bands.value.length - 1);
 };
 </script>
 
@@ -79,7 +77,7 @@ const addBand = () => {
             />
           </div>
 
-          <Accordion type="single" collapsible v-model="accordionValue">
+          <Accordion type="single" collapsible v-model="activeAccordion">
             <AccordionItem
               v-for="(band, index) in bands"
               :key="index"
