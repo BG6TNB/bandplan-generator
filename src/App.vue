@@ -22,8 +22,10 @@ import PdfFrame from "@i2d/pdf-frame-vue";
 import BandDiagram from "./components/BandDiagram.vue";
 
 const title = ref("IARU R1 HF Bandplan");
+const bandYOffsetSlider = ref([76]);
+const bandYOffset = ref(bandYOffsetSlider.value);
+
 const activeAccordion = ref();
-const pdfBlob = ref();
 
 const bands = ref([
   {
@@ -51,6 +53,8 @@ const addBand = () => {
   activeAccordion.value = String(bands.value.length - 1);
 };
 
+const pdfBlob = ref();
+
 const updatePdfBlob = (blob: Blob) => {
   pdfBlob.value = blob;
 };
@@ -71,8 +75,6 @@ const downloadPdf = () => {
   link.click();
   document.body.removeChild(link);
 };
-
-const bandYOffset = 76;
 </script>
 
 <template>
@@ -105,6 +107,17 @@ const bandYOffset = 76;
               id="input-title"
               placeholder="Title"
               class="max-w-sm"
+            />
+          </div>
+
+          <div class="grid w-full max-w-sm items-center gap-3">
+            <Label for="band-spacing">Band spacing</Label>
+            <Slider
+              id="band-spacing"
+              v-model="bandYOffsetSlider"
+              @value-commit="(value) => (bandYOffset = value)"
+              :min="30"
+              :max="200"
             />
           </div>
 
@@ -223,7 +236,7 @@ const bandYOffset = 76;
 
             <i-g
               v-for="(band, index) in bands"
-              :transform="{ translate: [0, index * bandYOffset] }"
+              :transform="{ translate: [20, 44 + index * bandYOffset[0]] }"
             >
               <BandDiagram
                 :title="band.title"

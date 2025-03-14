@@ -14,8 +14,8 @@ const {
   end: number;
   tickCount: number;
 }>();
-const bandLineXStart = 120;
-const bandLineXEnd = 1143;
+const bandLineXStart = 100;
+const bandLineXEnd = 1123;
 
 // Utility: rounds a number x to a “nice” number using a 1–2–5–10 scheme.
 function getNiceNumber(x: number) {
@@ -71,8 +71,8 @@ const pixelPerKHz = computed(
 <template>
   <i-text
     :width="96"
-    :x="20"
-    :y="60"
+    :x="0"
+    :y="16"
     :text="title"
     :style="{
       fill: '#000',
@@ -83,8 +83,8 @@ const pixelPerKHz = computed(
   <i-text
     v-if="subtitle"
     :width="96"
-    :x="20"
-    :y="80"
+    :x="0"
+    :y="36"
     :text="subtitle"
     :style="{
       fill: '#000',
@@ -96,25 +96,25 @@ const pixelPerKHz = computed(
   <!-- Band line -->
   <i-line
     :x1="bandLineXStart"
-    :y1="80"
+    :y1="36"
     :x2="bandLineXEnd"
-    :y2="80"
+    :y2="36"
     :style="{ lineWidth: 4 }"
   />
 
   <!-- Band start -->
   <i-line
     :x1="bandLineXStart"
-    :y1="64"
+    :y1="20"
     :x2="bandLineXStart"
-    :y2="112"
+    :y2="68"
     :style="{ lineWidth: 4 }"
   />
 
   <!-- Band start text -->
   <i-text
     :x="bandLineXStart - 40"
-    :y="44"
+    :y="0"
     :width="80"
     :text="start.toLocaleString('de-DE')"
     :style="{
@@ -127,7 +127,7 @@ const pixelPerKHz = computed(
   <!-- Band end text -->
   <i-text
     :x="bandLineXEnd - 40"
-    :y="44"
+    :y="0"
     :width="80"
     :text="end.toLocaleString('de-DE')"
     :style="{ fill: '#000', font: '16px GeistBold', align: 'center' }"
@@ -136,9 +136,9 @@ const pixelPerKHz = computed(
   <!-- Band end -->
   <i-line
     :x1="bandLineXEnd"
-    :y1="64"
+    :y1="20"
     :x2="bandLineXEnd"
-    :y2="112"
+    :y2="68"
     :style="{ lineWidth: 4 }"
   />
 
@@ -147,9 +147,9 @@ const pixelPerKHz = computed(
     v-for="tick in smallTicks"
     :key="`${tick}_small_tick`"
     :x1="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y1="72"
+    :y1="28"
     :x2="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y2="80"
+    :y2="36"
     :style="{ lineWidth: 4 }"
   />
 
@@ -159,7 +159,7 @@ const pixelPerKHz = computed(
     :key="`${tick}_big_tick_label`"
     :text="tick.toLocaleString('de-DE')"
     :x="bandLineXStart - 40 + (tick - start) * pixelPerKHz"
-    :y="44"
+    :y="0"
     :width="80"
     :style="{ fill: '#000', font: '16px GeistBold', align: 'center' }"
   />
@@ -169,36 +169,36 @@ const pixelPerKHz = computed(
     v-for="tick in bigTicks"
     :key="`${tick}_big_tick`"
     :x1="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y1="64"
+    :y1="20"
     :x2="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y2="80"
+    :y2="36"
     :style="{ lineWidth: 4 }"
   />
 
   <!-- CW Green -->
   <i-line
-    :x1="124"
-    :y1="88"
-    :x2="1139"
-    :y2="88"
+    :x1="bandLineXStart + 4"
+    :y1="44"
+    :x2="bandLineXEnd - 4"
+    :y2="44"
     :style="{ stroke: '#ADD249', lineWidth: 8 }"
   />
 
   <!-- PH Red -->
   <i-line
-    :x1="124"
-    :y1="98"
-    :x2="1139"
-    :y2="98"
+    :x1="bandLineXStart + 4"
+    :y1="54"
+    :x2="bandLineXEnd - 4"
+    :y2="54"
     :style="{ stroke: '#EF2E36', lineWidth: 8 }"
   />
 
   <!-- DIGI Blue -->
   <i-line
-    :x1="124"
-    :y1="108"
-    :x2="1139"
-    :y2="108"
+    :x1="bandLineXStart + 4"
+    :y1="64"
+    :x2="bandLineXEnd - 4"
+    :y2="64"
     :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
   />
 </template>
