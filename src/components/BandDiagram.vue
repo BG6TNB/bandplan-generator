@@ -66,6 +66,18 @@ const bigTicks = computed(() => {
 const pixelPerKHz = computed(
   () => (bandLineXEnd - bandLineXStart) / bandRange.value
 );
+
+const visibleBigTicks = computed(() => {
+  const minDistance = 30; // minimum pixels between labels
+  return bigTicks.value.filter((tick) => {
+    const xPosition = bandLineXStart + (tick - start) * pixelPerKHz.value;
+    // Hide if too close to start or end
+    return (
+      xPosition - bandLineXStart > minDistance &&
+      bandLineXEnd - xPosition > minDistance
+    );
+  });
+});
 </script>
 
 <template>
@@ -155,13 +167,17 @@ const pixelPerKHz = computed(
 
   <!-- Band big tick labels -->
   <i-text
-    v-for="tick in bigTicks"
+    v-for="tick in visibleBigTicks"
     :key="`${tick}_big_tick_label`"
     :text="tick.toLocaleString('de-DE')"
     :x="bandLineXStart - 40 + (tick - start) * pixelPerKHz"
     :y="0"
     :width="80"
-    :style="{ fill: '#000', font: '14px GeistBold', align: 'center' }"
+    :style="{
+      fill: '#000',
+      font: '14px GeistBold',
+      align: 'center',
+    }"
   />
 
   <!-- Big ticks -->
