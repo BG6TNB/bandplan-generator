@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/vue";
 import { useDark, useToggle } from "@vueuse/core";

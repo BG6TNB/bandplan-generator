@@ -1,18 +1,26 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+export type Segment = {
+  type: "CW" | "PHONE" | "DIGIMODE";
+  start: number;
+  end: number;
+};
+
 const {
   title,
   subtitle,
   start,
   end,
   tickCount = 34,
+  segments,
 } = defineProps<{
   title: string;
   subtitle?: string;
   start: number;
   end: number;
   tickCount: number;
+  segments?: Segment[];
 }>();
 const bandLineXStart = 100;
 const bandLineXEnd = 1103;
@@ -193,27 +201,63 @@ const visibleBigTicks = computed(() => {
 
   <!-- CW Green -->
   <i-line
-    :x1="bandLineXStart + 3"
+    v-for="segment in segments?.filter(({ type }) => type === 'CW')"
+    :x1="
+      Math.max(
+        bandLineXStart + 3,
+        bandLineXStart + (segment.start - start) * pixelPerKHz
+      )
+    "
     :y1="32"
-    :x2="bandLineXEnd - 3"
+    :x2="
+      Math.min(
+        bandLineXEnd - 3,
+        bandLineXStart + (segment.end - start) * pixelPerKHz
+      )
+    "
     :y2="32"
-    :style="{ stroke: '#ADD249', lineWidth: 8 }"
+    :style="{
+      stroke: '#ADD249',
+      lineWidth: 8,
+    }"
   />
 
-  <!-- PH Red -->
+  <!-- PHONE Red -->
   <i-line
-    :x1="bandLineXStart + 3"
+    v-for="segment in segments?.filter(({ type }) => type === 'PHONE')"
+    :x1="
+      Math.max(
+        bandLineXStart + 3,
+        bandLineXStart + (segment.start - start) * pixelPerKHz
+      )
+    "
     :y1="42"
-    :x2="bandLineXEnd - 3"
+    :x2="
+      Math.min(
+        bandLineXEnd - 3,
+        bandLineXStart + (segment.end - start) * pixelPerKHz
+      )
+    "
     :y2="42"
     :style="{ stroke: '#EF2E36', lineWidth: 8 }"
   />
 
-  <!-- DIGI Blue -->
+  <!-- DIGIMODE Blue -->
   <i-line
-    :x1="bandLineXStart + 3"
+    v-for="segment in segments?.filter(({ type }) => type === 'DIGIMODE')"
+    :x1="
+      Math.max(
+        bandLineXStart + 3,
+        bandLineXStart + (segment.start - start) * pixelPerKHz
+      )
+    "
     :y1="52"
-    :x2="bandLineXEnd - 3"
+    :x2="
+      Math.min(
+        bandLineXEnd - 3,
+        bandLineXStart + (segment.end - start) * pixelPerKHz
+      )
+    "
     :y2="52"
     :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
   />

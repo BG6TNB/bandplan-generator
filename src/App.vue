@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
+import { Plus, Download, Printer, Trash } from "lucide-vue-next";
+import PdfFrame from "@i2d/pdf-frame-vue";
 import Input from "@/components/ui/input/Input.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,24 +17,68 @@ import {
 } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import Slider from "@/components/ui/slider/Slider.vue";
-import DarkToggle from "./components/DarkToggle.vue";
-import { Plus, Download, Printer, Trash } from "lucide-vue-next";
-import AspectRatio from "./components/ui/aspect-ratio/AspectRatio.vue";
-import PdfFrame from "@i2d/pdf-frame-vue";
-import BandDiagram from "./components/BandDiagram.vue";
+import AspectRatio from "@/components/ui/aspect-ratio/AspectRatio.vue";
+import DarkToggle from "@/components/DarkToggle.vue";
+import BandDiagram, { type Segment } from "@/components/BandDiagram.vue";
+
+type Band = {
+  title: string;
+  subtitle: string;
+  start: number;
+  end: number;
+  tickCount: number[];
+  segments?: Segment[];
+};
 
 const title = ref("IARU R1 HF Bandplan");
 const bandYOffset = ref([73]);
 
 const activeAccordion = ref();
 
-const bands = ref([
+const bands = ref<Band[]>([
   {
     title: "28MHz",
     subtitle: "10m",
     start: 28000,
     end: 29700,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 28000,
+        end: 29300,
+      },
+      {
+        type: "CW",
+        start: 29520,
+        end: 29700,
+      },
+      {
+        type: "PHONE",
+        start: 28225,
+        end: 29300,
+      },
+      {
+        type: "PHONE",
+        start: 29520,
+        end: 29700,
+      },
+      {
+        type: "DIGIMODE",
+        start: 28070,
+        end: 28150,
+      },
+      {
+        type: "DIGIMODE",
+        start: 28300,
+        end: 28320,
+      },
+      {
+        type: "DIGIMODE",
+        start: 29200,
+        end: 29300,
+      },
+    ],
   },
   {
     title: "24MHz",
@@ -40,6 +86,33 @@ const bands = ref([
     start: 24890,
     end: 24990,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 24890,
+        end: 24929,
+      },
+      {
+        type: "CW",
+        start: 24931,
+        end: 24990,
+      },
+      {
+        type: "PHONE",
+        start: 24931,
+        end: 24990,
+      },
+      {
+        type: "DIGIMODE",
+        start: 24915,
+        end: 24929,
+      },
+      {
+        type: "DIGIMODE",
+        start: 24931,
+        end: 24940,
+      },
+    ],
   },
   {
     title: "21MHz",
@@ -47,6 +120,33 @@ const bands = ref([
     start: 21000,
     end: 21450,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 21000,
+        end: 21149,
+      },
+      {
+        type: "CW",
+        start: 21151,
+        end: 21450,
+      },
+      {
+        type: "PHONE",
+        start: 21151,
+        end: 21450,
+      },
+      {
+        type: "DIGIMODE",
+        start: 21070,
+        end: 21120,
+      },
+      {
+        type: "DIGIMODE",
+        start: 21151,
+        end: 21450,
+      },
+    ],
   },
   {
     title: "18MHz",
@@ -54,6 +154,33 @@ const bands = ref([
     start: 18068,
     end: 18168,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 18068,
+        end: 18109,
+      },
+      {
+        type: "CW",
+        start: 18111,
+        end: 18168,
+      },
+      {
+        type: "PHONE",
+        start: 18111,
+        end: 18168,
+      },
+      {
+        type: "DIGIMODE",
+        start: 18095,
+        end: 18109,
+      },
+      {
+        type: "DIGIMODE",
+        start: 18111,
+        end: 18168,
+      },
+    ],
   },
   {
     title: "14MHz",
@@ -61,6 +188,33 @@ const bands = ref([
     start: 14000,
     end: 14350,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 14000,
+        end: 14099,
+      },
+      {
+        type: "CW",
+        start: 14101,
+        end: 14350,
+      },
+      {
+        type: "PHONE",
+        start: 14101,
+        end: 14350,
+      },
+      {
+        type: "DIGIMODE",
+        start: 14070,
+        end: 14099,
+      },
+      {
+        type: "DIGIMODE",
+        start: 14101,
+        end: 14350,
+      },
+    ],
   },
   {
     title: "10MHz",
@@ -68,6 +222,18 @@ const bands = ref([
     start: 10100,
     end: 10150,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 10100,
+        end: 10150,
+      },
+      {
+        type: "DIGIMODE",
+        start: 10130,
+        end: 10150,
+      },
+    ],
   },
   {
     title: "7MHz",
@@ -75,6 +241,23 @@ const bands = ref([
     start: 7000,
     end: 7200,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 7000,
+        end: 7200,
+      },
+      {
+        type: "PHONE",
+        start: 7050,
+        end: 7200,
+      },
+      {
+        type: "DIGIMODE",
+        start: 7040,
+        end: 7200,
+      },
+    ],
   },
   {
     title: "5MHz",
@@ -82,13 +265,47 @@ const bands = ref([
     start: 5351.5,
     end: 5366.5,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 5351.5,
+        end: 5366.5,
+      },
+      {
+        type: "PHONE",
+        start: 5354,
+        end: 5366,
+      },
+      {
+        type: "DIGIMODE",
+        start: 5354,
+        end: 5366,
+      },
+    ],
   },
   {
     title: "3.5MHz",
     subtitle: "80m",
     start: 3500,
     end: 3800,
-    tickCount: [34],
+    tickCount: [50],
+    segments: [
+      {
+        type: "CW",
+        start: 3500,
+        end: 3800,
+      },
+      {
+        type: "PHONE",
+        start: 3600,
+        end: 3800,
+      },
+      {
+        type: "DIGIMODE",
+        start: 3570,
+        end: 3800,
+      },
+    ],
   },
   {
     title: "1.8MHz",
@@ -96,6 +313,23 @@ const bands = ref([
     start: 1810,
     end: 2000,
     tickCount: [34],
+    segments: [
+      {
+        type: "CW",
+        start: 1810,
+        end: 2000,
+      },
+      {
+        type: "PHONE",
+        start: 1840,
+        end: 2000,
+      },
+      {
+        type: "DIGIMODE",
+        start: 1838,
+        end: 2000,
+      },
+    ],
   },
 ]);
 
@@ -319,6 +553,7 @@ const downloadPdf = () => {
                 :start="band.start"
                 :end="band.end"
                 :tick-count="band.tickCount[0]"
+                :segments="band.segments"
               />
             </i-g>
           </i-page>
