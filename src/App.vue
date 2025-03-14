@@ -20,6 +20,15 @@ import Slider from "@/components/ui/slider/Slider.vue";
 import AspectRatio from "@/components/ui/aspect-ratio/AspectRatio.vue";
 import DarkToggle from "@/components/DarkToggle.vue";
 import BandDiagram, { type Segment } from "@/components/BandDiagram.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Separator from "@/components/ui/separator/Separator.vue";
 
 type Band = {
   title: string;
@@ -78,6 +87,11 @@ const bands = ref<Band[]>([
         start: 29200,
         end: 29300,
       },
+      {
+        type: "DIGIMODE",
+        start: 29520,
+        end: 29700,
+      },
     ],
   },
   {
@@ -110,7 +124,7 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 24931,
-        end: 24940,
+        end: 24990,
       },
     ],
   },
@@ -354,6 +368,19 @@ const removeBand = (indexToRemove: number) => {
   }
 };
 
+const addSegment = (bandIndex: number) => {
+  bands.value[bandIndex].segments = [
+    ...(bands.value[bandIndex].segments || []),
+    { type: "CW", start: 0, end: 0 },
+  ];
+};
+
+const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
+  bands.value[bandIndex].segments = bands.value[bandIndex].segments?.filter(
+    (_, index) => index !== segmentIndexToRemove
+  );
+};
+
 const pdfBlob = ref();
 
 const updatePdfBlob = (blob: Blob) => {
@@ -384,7 +411,7 @@ const downloadPdf = () => {
       class="sticky top-0 z-50 bg-zinc-50/60 dark:bg-zinc-950/60 backdrop-blur border-b border-zinc-200 dark:border-zinc-800"
     >
       <div
-        class="container mx-auto px-4 py-2 flex items-center justify-between"
+        class="container mx-auto min-h-14 px-4 py-2 flex items-center justify-between flex-wrap gap-2"
       >
         <h1 class="font-bold text-lg dark:text-zinc-50">Bandplan generator</h1>
         <div class="flex gap-2">
@@ -399,7 +426,7 @@ const downloadPdf = () => {
       </div>
     </header>
     <main
-      class="container flex-1 mx-auto md:grid md:grid-cols-[280px_1fr] md:gap-6 lg:grid-cols-[300px_1fr] lg:gap-6"
+      class="container flex-1 mx-auto md:grid md:grid-cols-[300px_1fr] md:gap-4 lg:grid-cols-[320px_1fr]"
     >
       <aside class="md:h-[calc(100vh-3.5rem-1px)] overflow-auto no-scrollbar">
         <div class="flex flex-col gap-4 p-4">
@@ -421,16 +448,16 @@ const downloadPdf = () => {
 
           <Accordion type="single" collapsible v-model="activeAccordion">
             <AccordionItem
-              v-for="(band, index) in bands"
-              :key="index"
-              :value="String(index)"
+              v-for="(band, bandIndex) in bands"
+              :key="bandIndex"
+              :value="String(bandIndex)"
             >
               <AccordionTrigger>
                 <div class="grow text-left justify-between items-center flex">
                   {{ band.title }}
                 </div>
                 <Button
-                  @click.stop="removeBand(index)"
+                  @click.stop="removeBand(bandIndex)"
                   size="icon"
                   variant="ghost"
                   class="mr-2 text-red-400 hover:text-red-400 dark:text-red-400 dark:hover:text-red-400"
@@ -440,41 +467,41 @@ const downloadPdf = () => {
               </AccordionTrigger>
               <AccordionContent class="px-1 grid gap-4">
                 <div class="grid w-full items-center gap-1.5">
-                  <Label :for="`${index}-title`">Band title</Label>
+                  <Label :for="`${bandIndex}-title`">Band title</Label>
                   <Input
                     v-model="band.title"
-                    :id="`${index}-title`"
+                    :id="`${bandIndex}-title`"
                     placeholder="Band title"
                   />
                 </div>
                 <div class="grid w-full items-center gap-1.5">
-                  <Label :for="`${index}-subtitle`">Band subtitle</Label>
+                  <Label :for="`${bandIndex}-subtitle`">Band subtitle</Label>
                   <Input
                     v-model="band.subtitle"
-                    :id="`${index}-subtitle`"
+                    :id="`${bandIndex}-subtitle`"
                     placeholder="Band subtitle"
                   />
                 </div>
                 <div class="flex gap-2">
                   <NumberField
-                    :id="`${index}-start`"
+                    :id="`${bandIndex}-start`"
                     v-model="band.start"
                     locale="de-DE"
                     :min="0"
                   >
-                    <Label :for="`${index}-start`">Band start</Label>
+                    <Label :for="`${bandIndex}-start`">Band start</Label>
                     <NumberFieldContent class="flex items-center gap-1">
                       <NumberFieldInput />
                       <span class="text-zinc-500">kHz</span>
                     </NumberFieldContent>
                   </NumberField>
                   <NumberField
-                    :id="`${index}-end`"
+                    :id="`${bandIndex}-end`"
                     v-model="band.end"
                     locale="de-DE"
                     :min="0"
                   >
-                    <Label :for="`${index}-end`">Band end</Label>
+                    <Label :for="`${bandIndex}-end`">Band end</Label>
                     <NumberFieldContent class="flex items-center gap-1">
                       <NumberFieldInput />
                       <span class="text-zinc-500">kHz</span>
@@ -482,18 +509,78 @@ const downloadPdf = () => {
                   </NumberField>
                 </div>
                 <div class="grid w-full items-center gap-3">
-                  <Label :for="`${index}-scale`">Scale</Label>
+                  <Label :for="`${bandIndex}-scale`">Scale</Label>
                   <Slider
-                    :id="`${index}-scale`"
+                    :id="`${bandIndex}-scale`"
                     v-model="band.tickCount"
                     :min="10"
                     :max="200"
                   />
                 </div>
+
+                <Separator />
+                <h3 class="font-medium">Segments</h3>
+
+                <div
+                  v-for="(segment, segmentIndex) in band.segments"
+                  class="border border-zinc-200 dark:border-zinc-800 rounded-md p-2 grid gap-2"
+                >
+                  <div class="flex gap-2">
+                    <Select v-model="segment.type">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="CW">CW</SelectItem>
+                          <SelectItem value="PHONE">PHONE</SelectItem>
+                          <SelectItem value="DIGIMODE">DIGIMODE</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      @click.stop="removeSegment(bandIndex, segmentIndex)"
+                      size="icon"
+                      variant="ghost"
+                      class="shrink-0 text-red-400 hover:text-red-400 dark:text-red-400 dark:hover:text-red-400"
+                    >
+                      <Trash />
+                    </Button>
+                  </div>
+                  <div class="flex gap-2">
+                    <NumberField
+                      :id="`${segmentIndex}-start`"
+                      v-model="segment.start"
+                      locale="de-DE"
+                      :min="0"
+                    >
+                      <Label :for="`${segmentIndex}-start`">Start</Label>
+                      <NumberFieldContent class="flex items-center gap-1">
+                        <NumberFieldInput />
+                        <span class="text-zinc-500">kHz</span>
+                      </NumberFieldContent>
+                    </NumberField>
+                    <NumberField
+                      :id="`${segmentIndex}-end`"
+                      v-model="segment.end"
+                      locale="de-DE"
+                      :min="0"
+                    >
+                      <Label :for="`${segmentIndex}-end`">End</Label>
+                      <NumberFieldContent class="flex items-center gap-1">
+                        <NumberFieldInput />
+                        <span class="text-zinc-500">kHz</span>
+                      </NumberFieldContent>
+                    </NumberField>
+                  </div>
+                </div>
+                <Button @click="addSegment(bandIndex)"
+                  ><Plus class="w-4 h-4" />Add segment</Button
+                >
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Button @click="addBand"> <Plus class="w-4 h-4" />Add band</Button>
+          <Button @click="addBand"><Plus class="w-4 h-4" />Add band</Button>
         </div>
       </aside>
       <div class="w-full h-full p-4">
