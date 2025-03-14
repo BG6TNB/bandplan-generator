@@ -96,10 +96,10 @@ const pixelPerKHz = computed(
   <!-- Band line -->
   <i-line
     :x1="bandLineXStart"
-    :y1="28"
+    :y1="25"
     :x2="bandLineXEnd"
-    :y2="28"
-    :style="{ lineWidth: 3 }"
+    :y2="25"
+    :style="{ lineWidth: 2 }"
   />
 
   <!-- Band start -->
@@ -107,8 +107,8 @@ const pixelPerKHz = computed(
     :x1="bandLineXStart"
     :y1="16"
     :x2="bandLineXStart"
-    :y2="60"
-    :style="{ lineWidth: 3 }"
+    :y2="56"
+    :style="{ lineWidth: 2 }"
   />
 
   <!-- Band start text -->
@@ -138,8 +138,8 @@ const pixelPerKHz = computed(
     :x1="bandLineXEnd"
     :y1="16"
     :x2="bandLineXEnd"
-    :y2="60"
-    :style="{ lineWidth: 3 }"
+    :y2="56"
+    :style="{ lineWidth: 2 }"
   />
 
   <!-- Small ticks -->
@@ -149,8 +149,8 @@ const pixelPerKHz = computed(
     :x1="bandLineXStart + (tick - start) * pixelPerKHz"
     :y1="20"
     :x2="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y2="28"
-    :style="{ lineWidth: 3 }"
+    :y2="25"
+    :style="{ lineWidth: 2 }"
   />
 
   <!-- Band big tick labels -->
@@ -171,34 +171,34 @@ const pixelPerKHz = computed(
     :x1="bandLineXStart + (tick - start) * pixelPerKHz"
     :y1="16"
     :x2="bandLineXStart + (tick - start) * pixelPerKHz"
-    :y2="28"
-    :style="{ lineWidth: 3 }"
+    :y2="25"
+    :style="{ lineWidth: 2 }"
   />
 
   <!-- CW Green -->
   <i-line
-    :x1="bandLineXStart + 4"
-    :y1="36"
-    :x2="bandLineXEnd - 4"
-    :y2="36"
+    :x1="bandLineXStart + 3"
+    :y1="32"
+    :x2="bandLineXEnd - 3"
+    :y2="32"
     :style="{ stroke: '#ADD249', lineWidth: 8 }"
   />
 
   <!-- PH Red -->
   <i-line
-    :x1="bandLineXStart + 4"
-    :y1="46"
-    :x2="bandLineXEnd - 4"
-    :y2="46"
+    :x1="bandLineXStart + 3"
+    :y1="42"
+    :x2="bandLineXEnd - 3"
+    :y2="42"
     :style="{ stroke: '#EF2E36', lineWidth: 8 }"
   />
 
   <!-- DIGI Blue -->
   <i-line
-    :x1="bandLineXStart + 4"
-    :y1="56"
-    :x2="bandLineXEnd - 4"
-    :y2="56"
+    :x1="bandLineXStart + 3"
+    :y1="52"
+    :x2="bandLineXEnd - 3"
+    :y2="52"
     :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
   />
 </template>

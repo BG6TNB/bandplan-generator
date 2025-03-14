@@ -216,7 +216,7 @@ const downloadPdf = () => {
             width="100%"
             class="border-0"
             ref="pdf-iframe"
-            :src="`${pdfBlob}#view=Fit&scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0`"
+            :src="`${pdfBlob}#view=Fit`"
           />
         </AspectRatio>
 
