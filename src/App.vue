@@ -629,6 +629,51 @@ const downloadPdf = () => {
               :style="{ fill: '#000', font: '32px GeistBold' }"
             />
 
+            <i-text
+              :x="673"
+              :y="11"
+              text="CW"
+              :style="{ fill: '#000', font: '14px GeistBold' }"
+            />
+
+            <i-line
+              :x1="700"
+              :y1="20"
+              :x2="724"
+              :y2="20"
+              :style="{ stroke: '#ADD249', lineWidth: 8 }"
+            />
+
+            <i-text
+              :x="740"
+              :y="11"
+              text="PHONE"
+              :style="{ fill: '#000', font: '14px GeistBold' }"
+            />
+
+            <i-line
+              :x1="792"
+              :y1="20"
+              :x2="816"
+              :y2="20"
+              :style="{ stroke: '#EF2E36', lineWidth: 8 }"
+            />
+
+            <i-text
+              :x="832"
+              :y="11"
+              text="DIGIMODE"
+              :style="{ fill: '#000', font: '14px GeistBold' }"
+            />
+
+            <i-line
+              :x1="905"
+              :y1="20"
+              :x2="929"
+              :y2="20"
+              :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
+            />
+
             <i-g
               v-for="(band, index) in bands"
               :transform="{ translate: [20, 44 + index * bandYOffset[0]] }"
