@@ -19,9 +19,9 @@ import DarkToggle from "./components/DarkToggle.vue";
 import { Plus, Download, Printer } from "lucide-vue-next";
 import AspectRatio from "./components/ui/aspect-ratio/AspectRatio.vue";
 import PdfFrame from "@i2d/pdf-frame-vue";
+import BandDiagram from "./components/BandDiagram.vue";
 
 const title = ref("IARU R1 HF Bandplan");
-const tickCount = ref([34]);
 const activeAccordion = ref();
 const pdfBlob = ref();
 
@@ -31,17 +31,22 @@ const bands = ref([
     subtitle: "10m",
     start: 28000,
     end: 29700,
+    tickCount: [34],
   },
   {
     title: "24MHz",
     subtitle: "12m",
     start: 28000,
     end: 29700,
+    tickCount: [34],
   },
 ]);
 
 const addBand = () => {
-  bands.value = [...bands.value, { title: "", subtitle: "", start: 0, end: 0 }];
+  bands.value = [
+    ...bands.value,
+    { title: "", subtitle: "", start: 0, end: 0, tickCount: [34] },
+  ];
 
   activeAccordion.value = String(bands.value.length - 1);
 };
@@ -66,6 +71,8 @@ const downloadPdf = () => {
   link.click();
   document.body.removeChild(link);
 };
+
+const bandYOffset = 76;
 </script>
 
 <template>
@@ -157,7 +164,7 @@ const downloadPdf = () => {
                   <Label :for="`${index}-scale`">Scale</Label>
                   <Slider
                     :id="`${index}-scale`"
-                    v-model="tickCount"
+                    v-model="band.tickCount"
                     :min="10"
                     :max="200"
                   />
@@ -213,6 +220,19 @@ const downloadPdf = () => {
               :text="title"
               :style="{ fill: '#000', font: '32px GeistBold' }"
             />
+
+            <i-g
+              v-for="(band, index) in bands"
+              :transform="{ translate: [0, index * bandYOffset] }"
+            >
+              <BandDiagram
+                :title="band.title"
+                :subtitle="band.subtitle"
+                :start="band.start"
+                :end="band.end"
+                :tick-count="band.tickCount[0]"
+              />
+            </i-g>
           </i-page>
         </PdfFrame>
       </div>
