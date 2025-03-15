@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Label } from "@/components/ui/label";
 import Input from "@/components/ui/input/Input.vue";
-import { Plus, Trash, RotateCcw, Link } from "lucide-vue-next";
+import { Plus, Trash, RotateCcw, Link, Check } from "lucide-vue-next";
 import type { Band } from "@/components/BandDiagram.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -93,14 +93,31 @@ const confirmReset = () => {
   emit("resetClick");
   activeAccordion.value = undefined;
 };
+
+const isRecentlyCopied = ref(false);
+
+const handleCopyClick = () => {
+  emit("copyClick");
+  isRecentlyCopied.value = true;
+  setTimeout(() => {
+    isRecentlyCopied.value = false;
+  }, 2000);
+};
 </script>
 
 <template>
   <div class="flex flex-col gap-4 p-4">
     <div class="flex gap-4">
-      <Button variant="default" class="grow" @click="$emit('copyClick')"
-        ><Link class="w-4 h-4" />Copy link</Button
+      <Button
+        variant="default"
+        class="grow"
+        :disabled="isRecentlyCopied"
+        @click="handleCopyClick"
       >
+        <Check v-if="isRecentlyCopied" class="w-4 h-4" />
+        <Link v-else class="w-4 h-" />
+        {{ isRecentlyCopied ? "Copied" : "Copy link" }}
+      </Button>
       <AlertDialog>
         <AlertDialogTrigger as-child>
           <Button variant="destructive">
