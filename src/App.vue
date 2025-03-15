@@ -18,6 +18,11 @@ import { toast } from "vue-sonner";
 const title = useStorage("title", "IARU R1 HF Bandplan");
 const bandYOffset = useStorage("bandYOffset", [73]);
 const bands = useStorage<Band[]>("bands", iaruR1Bandplan as Band[]);
+const colors = useStorage("colors", {
+  CW: "#ADD249",
+  PHONE: "#EF2E36",
+  DIGIMODE: "#1AB4F0",
+});
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -59,6 +64,13 @@ const reset = () => {
   title.value = "IARU R1 HF Bandplan";
   bandYOffset.value = [73];
   bands.value = structuredClone(iaruR1Bandplan) as Band[];
+  colors.value = {
+    CW: "#ADD249",
+    PHONE: "#EF2E36",
+    DIGIMODE: "#1AB4F0",
+  };
+
+  toast.success("Reset to default");
 };
 
 const { copy } = useClipboard();
@@ -111,6 +123,7 @@ const copyLink = () => {
           v-model:title="title"
           v-model:band-y-offset="bandYOffset"
           v-model:bands="bands"
+          v-model:colors="colors"
           @reset-click="reset"
           @copy-click="copyLink"
         />
@@ -169,7 +182,7 @@ const copyLink = () => {
               :y1="28"
               :x2="920"
               :y2="28"
-              :style="{ stroke: '#ADD249', lineWidth: 8 }"
+              :style="{ stroke: colors.CW, lineWidth: 8 }"
             />
 
             <i-text
@@ -184,7 +197,7 @@ const copyLink = () => {
               :y1="28"
               :x2="1012"
               :y2="28"
-              :style="{ stroke: '#EF2E36', lineWidth: 8 }"
+              :style="{ stroke: colors.PHONE, lineWidth: 8 }"
             />
 
             <i-text
@@ -199,7 +212,7 @@ const copyLink = () => {
               :y1="28"
               :x2="1125"
               :y2="28"
-              :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
+              :style="{ stroke: colors.DIGIMODE, lineWidth: 8 }"
             />
 
             <i-text
@@ -221,6 +234,7 @@ const copyLink = () => {
                 :end="band.end"
                 :tick-count="band.tickCount"
                 :segments="band.segments"
+                :colors="colors"
               />
             </i-g>
           </i-page>

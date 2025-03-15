@@ -47,6 +47,14 @@ export type Band = {
   segments?: Segment[];
 };
 
+export type Colors = {
+  CW: string;
+  PHONE: string;
+  DIGIMODE: string;
+};
+
+type Props = Band & { colors: Colors };
+
 const {
   title,
   subtitle,
@@ -54,7 +62,8 @@ const {
   end,
   tickCount = 34,
   segments,
-} = defineProps<Band>();
+  colors,
+} = defineProps<Props>();
 const bandLineXStart = 100;
 const bandLineXEnd = 1103;
 
@@ -252,7 +261,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :style="{ lineWidth: 2 }"
   />
 
-  <!-- CW Green -->
+  <!-- CW -->
   <i-line
     v-for="segment in segments?.filter(isCWSegment)"
     :x1="
@@ -270,12 +279,12 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     "
     :y2="32"
     :style="{
-      stroke: '#ADD249',
+      stroke: colors.CW,
       lineWidth: 8,
     }"
   />
 
-  <!-- PHONE Red -->
+  <!-- PHONE -->
   <i-line
     v-for="segment in segments?.filter(isPhoneSegment)"
     :x1="
@@ -292,7 +301,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
       )
     "
     :y2="42"
-    :style="{ stroke: '#EF2E36', lineWidth: 8 }"
+    :style="{ stroke: colors.PHONE, lineWidth: 8 }"
   />
 
   <!-- DIGIMODE Blue -->
@@ -312,7 +321,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
       )
     "
     :y2="52"
-    :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
+    :style="{ stroke: colors.DIGIMODE, lineWidth: 8 }"
   />
 
   <i-g v-for="segment in segments?.filter(isRangeSegment)">

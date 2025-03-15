@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { Label } from "@/components/ui/label";
 import Input from "@/components/ui/input/Input.vue";
 import { Plus, Trash, RotateCcw, Link, Check } from "lucide-vue-next";
-import type { Band } from "@/components/BandDiagram.vue";
+import type { Band, Colors } from "@/components/BandDiagram.vue";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -38,11 +39,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Slider from "@/components/ui/slider/Slider.vue";
-import { ref } from "vue";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 const title = defineModel<string>("title", { required: true });
 const bandYOffset = defineModel<number[]>("bandYOffset", { required: true });
 const bands = defineModel<Band[]>("bands", { required: true });
+const colors = defineModel<Colors>("colors", { required: true });
 
 const emit = defineEmits<{
   resetClick: [];
@@ -141,6 +143,27 @@ const handleCopyClick = () => {
     <div class="grid w-full items-center gap-1.5">
       <Label for="input-title">Title</Label>
       <Input v-model="title" id="input-title" placeholder="Title" />
+    </div>
+
+    <div class="flex gap-2 flex-wrap">
+      <div
+        class="flex items-center p-2 border gap-2 border-zinc-200 dark:border-zinc-800 rounded-md"
+      >
+        <Label class="text-xs font-normal">CW</Label
+        ><ColorPicker v-model="colors.CW" />
+      </div>
+      <div
+        class="flex items-center p-2 border gap-2 border-zinc-200 dark:border-zinc-800 rounded-md"
+      >
+        <Label class="text-xs font-normal">PHONE</Label
+        ><ColorPicker v-model="colors.PHONE" />
+      </div>
+      <div
+        class="flex items-center p-2 border gap-2 border-zinc-200 dark:border-zinc-800 rounded-md"
+      >
+        <Label class="text-xs font-normal">DIGIMODE</Label
+        ><ColorPicker v-model="colors.DIGIMODE" />
+      </div>
     </div>
 
     <div class="grid w-full items-center gap-3">
