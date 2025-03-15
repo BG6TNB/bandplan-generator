@@ -112,7 +112,7 @@ const copyLink = () => {
           >
         </div>
         <div class="flex gap-2">
-          <Button variant="outline" @click="print"
+          <Button variant="outline" @click="print(150, title)"
             ><Printer class="w-4 h-4" />Print</Button
           >
           <Button variant="outline" @click="download(title)"
@@ -141,16 +141,14 @@ const copyLink = () => {
         </p>
         <AspectRatio
           :ratio="1.414 / 1"
-          class="bg-zinc-100 dark:bg-zinc-900 rounded-lg"
+          class="bg-zinc-100 dark:bg-zinc-900 rounded-lg md:rounded-xl shadow-lg"
         >
-          <!-- <iframe
-            height="100%"
-            width="100%"
-            class="border-0"
-            ref="pdf-iframe"
-            :src="`${pdfBlob}#view=Fit&scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0`"
-          /> -->
-          <VuePDF :pdf="pdf" fit-parent ref="pdf-viewer" />
+          <VuePDF
+            :pdf="pdf"
+            fit-parent
+            ref="pdf-viewer"
+            class="rounded-lg md:rounded-xl overflow-hidden"
+          />
         </AspectRatio>
 
         <PdfFrame
