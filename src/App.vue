@@ -11,7 +11,13 @@ import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
 import iaruR1Bandplan from "@/assets/iaru-r1-bandplan.json";
 import BandEditor from "@/components/BandEditor.vue";
 import { Toaster } from "@/components/ui/sonner";
-import { useClipboard, useResizeObserver, useStorage } from "@vueuse/core";
+import {
+  useClipboard,
+  useResizeObserver,
+  useStorage,
+  type MaybeComputedElementRef,
+  type MaybeElement,
+} from "@vueuse/core";
 import { compress, decompress } from "compress-json";
 import { toast } from "vue-sonner";
 import { usePDF, VuePDF } from "@tato30/vue-pdf";
@@ -43,9 +49,12 @@ const pdfBlob = ref();
 const { pdf, print, download } = usePDF(pdfBlob);
 const pdfViewerRef = useTemplateRef("pdf-viewer");
 
-useResizeObserver(pdfViewerRef, () => {
-  pdfViewerRef.value?.reload();
-});
+useResizeObserver(
+  pdfViewerRef as unknown as MaybeComputedElementRef<MaybeElement>,
+  () => {
+    pdfViewerRef.value?.reload();
+  }
+);
 
 const updatePdfBlob = (blob: Blob) => {
   pdfBlob.value = blob;
