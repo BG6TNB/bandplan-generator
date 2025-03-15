@@ -1,10 +1,50 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-export type Segment = {
-  type: "CW" | "PHONE" | "DIGIMODE";
+type CWSegment = {
+  type: "CW";
   start: number;
   end: number;
+};
+type PhoneSegment = {
+  type: "PHONE";
+  start: number;
+  end: number;
+};
+type DigimodeSegment = {
+  type: "DIGIMODE";
+  start: number;
+  end: number;
+};
+type RangeSegment = {
+  type: "Range";
+  start: number;
+  end: number;
+  label: string;
+};
+type PointSegment = {
+  type: "Point";
+  frequency: number;
+  label: string;
+  labelWidth?: number;
+  xOffset?: number;
+  yOffset?: number;
+};
+
+export type Segment =
+  | CWSegment
+  | PhoneSegment
+  | DigimodeSegment
+  | RangeSegment
+  | PointSegment;
+
+export type Band = {
+  title: string;
+  subtitle: string;
+  start: number;
+  end: number;
+  tickCount: number;
+  segments?: Segment[];
 };
 
 const {
@@ -14,14 +54,7 @@ const {
   end,
   tickCount = 34,
   segments,
-} = defineProps<{
-  title: string;
-  subtitle?: string;
-  start: number;
-  end: number;
-  tickCount: number;
-  segments?: Segment[];
-}>();
+} = defineProps<Band>();
 const bandLineXStart = 100;
 const bandLineXEnd = 1103;
 
@@ -86,6 +119,26 @@ const visibleBigTicks = computed(() => {
     );
   });
 });
+
+function isCWSegment(segment: Segment): segment is CWSegment {
+  return segment.type === "CW";
+}
+
+function isPhoneSegment(segment: Segment): segment is PhoneSegment {
+  return segment.type === "PHONE";
+}
+
+function isDigimodeSegment(segment: Segment): segment is DigimodeSegment {
+  return segment.type === "DIGIMODE";
+}
+
+function isRangeSegment(segment: Segment): segment is RangeSegment {
+  return segment.type === "Range";
+}
+
+function isPointSegment(segment: Segment): segment is PointSegment {
+  return segment.type === "Point";
+}
 </script>
 
 <template>
@@ -134,23 +187,14 @@ const visibleBigTicks = computed(() => {
   <!-- Band start text -->
   <i-text
     :x="bandLineXStart - 40"
-    :y="0"
+    :y="2"
     :width="80"
     :text="start.toLocaleString('de-DE')"
     :style="{
       fill: '#000',
-      font: '14px GeistBold',
+      font: '12px GeistBold',
       align: 'center',
     }"
-  />
-
-  <!-- Band end text -->
-  <i-text
-    :x="bandLineXEnd - 40"
-    :y="0"
-    :width="80"
-    :text="end.toLocaleString('de-DE')"
-    :style="{ fill: '#000', font: '14px GeistBold', align: 'center' }"
   />
 
   <!-- Band end -->
@@ -160,6 +204,15 @@ const visibleBigTicks = computed(() => {
     :x2="bandLineXEnd"
     :y2="56"
     :style="{ lineWidth: 2 }"
+  />
+
+  <!-- Band end text -->
+  <i-text
+    :x="bandLineXEnd - 40"
+    :y="2"
+    :width="80"
+    :text="end.toLocaleString('de-DE')"
+    :style="{ fill: '#000', font: '12px GeistBold', align: 'center' }"
   />
 
   <!-- Small ticks -->
@@ -179,11 +232,11 @@ const visibleBigTicks = computed(() => {
     :key="`${tick}_big_tick_label`"
     :text="tick.toLocaleString('de-DE')"
     :x="bandLineXStart - 40 + (tick - start) * pixelPerKHz"
-    :y="0"
+    :y="2"
     :width="80"
     :style="{
       fill: '#000',
-      font: '14px GeistBold',
+      font: '12px GeistBold',
       align: 'center',
     }"
   />
@@ -201,7 +254,7 @@ const visibleBigTicks = computed(() => {
 
   <!-- CW Green -->
   <i-line
-    v-for="segment in segments?.filter(({ type }) => type === 'CW')"
+    v-for="segment in segments?.filter(isCWSegment)"
     :x1="
       Math.max(
         bandLineXStart + 3,
@@ -224,7 +277,7 @@ const visibleBigTicks = computed(() => {
 
   <!-- PHONE Red -->
   <i-line
-    v-for="segment in segments?.filter(({ type }) => type === 'PHONE')"
+    v-for="segment in segments?.filter(isPhoneSegment)"
     :x1="
       Math.max(
         bandLineXStart + 3,
@@ -244,7 +297,7 @@ const visibleBigTicks = computed(() => {
 
   <!-- DIGIMODE Blue -->
   <i-line
-    v-for="segment in segments?.filter(({ type }) => type === 'DIGIMODE')"
+    v-for="segment in segments?.filter(isDigimodeSegment)"
     :x1="
       Math.max(
         bandLineXStart + 3,
@@ -261,4 +314,108 @@ const visibleBigTicks = computed(() => {
     :y2="52"
     :style="{ stroke: '#1AB4F0', lineWidth: 8 }"
   />
+
+  <i-g v-for="segment in segments?.filter(isRangeSegment)">
+    <!-- Segment line -->
+    <i-line
+      :x1="
+        Math.max(
+          bandLineXStart,
+          bandLineXStart + (segment.start - start) * pixelPerKHz
+        )
+      "
+      :y1="60"
+      :x2="
+        Math.min(
+          bandLineXEnd,
+          bandLineXStart + (segment.end - start) * pixelPerKHz
+        )
+      "
+      :y2="60"
+      :style="{ stroke: '#000', lineWidth: 2 }"
+    />
+
+    <!-- Segment start -->
+    <i-line
+      :x1="
+        Math.max(
+          bandLineXStart,
+          bandLineXStart + (segment.start - start) * pixelPerKHz
+        )
+      "
+      :y1="57"
+      :x2="
+        Math.max(
+          bandLineXStart,
+          bandLineXStart + (segment.start - start) * pixelPerKHz
+        )
+      "
+      :y2="61"
+      :style="{ stroke: '#000', lineWidth: 2 }"
+    />
+
+    <!-- Segment end -->
+    <i-line
+      :x1="
+        Math.min(
+          bandLineXEnd,
+          bandLineXStart + (segment.end - start) * pixelPerKHz
+        )
+      "
+      :y1="57"
+      :x2="
+        Math.min(
+          bandLineXEnd,
+          bandLineXStart + (segment.end - start) * pixelPerKHz
+        )
+      "
+      :y2="61"
+      :style="{ stroke: '#000', lineWidth: 2 }"
+    />
+
+    <i-text
+      :text="segment.label"
+      :x="
+        Math.max(
+          bandLineXStart,
+          bandLineXStart + (segment.start - start) * pixelPerKHz
+        )
+      "
+      :y="60"
+      :style="{
+        fill: '#000',
+        font: '10px GeistMedium',
+      }"
+    />
+  </i-g>
+
+  <i-g>
+    <i-line
+      v-for="segment in segments?.filter(isPointSegment)"
+      :x1="bandLineXStart + (segment.frequency - start) * pixelPerKHz"
+      :y1="20"
+      :x2="bandLineXStart + (segment.frequency - start) * pixelPerKHz"
+      :y2="25"
+      :style="{ stroke: '#000', lineWidth: 1 }"
+    />
+
+    <i-text
+      v-for="segment in segments?.filter(isPointSegment)"
+      :key="`${segment.frequency}_point_label`"
+      :text="segment.label"
+      :x="
+        bandLineXStart +
+        (segment.frequency - start) * pixelPerKHz -
+        (segment.labelWidth || 40) / 2 +
+        (segment.xOffset || 0)
+      "
+      :y="11 + (segment.yOffset || 0)"
+      :width="segment.labelWidth || 40"
+      :style="{
+        fill: '#000',
+        font: '7px GeistMedium',
+        align: 'center',
+      }"
+    />
+  </i-g>
 </template>

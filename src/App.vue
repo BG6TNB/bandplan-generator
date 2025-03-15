@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import Slider from "@/components/ui/slider/Slider.vue";
 import AspectRatio from "@/components/ui/aspect-ratio/AspectRatio.vue";
 import DarkToggle from "@/components/DarkToggle.vue";
-import BandDiagram, { type Segment } from "@/components/BandDiagram.vue";
+import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
 import {
   Select,
   SelectContent,
@@ -29,15 +29,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Separator from "@/components/ui/separator/Separator.vue";
-
-type Band = {
-  title: string;
-  subtitle: string;
-  start: number;
-  end: number;
-  tickCount: number[];
-  segments?: Segment[];
-};
 
 const title = ref("IARU R1 HF Bandplan");
 const bandYOffset = ref([73]);
@@ -50,7 +41,7 @@ const bands = ref<Band[]>([
     subtitle: "10m",
     start: 28000,
     end: 29700,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -88,9 +79,77 @@ const bands = ref<Band[]>([
         end: 29300,
       },
       {
-        type: "DIGIMODE",
-        start: 29520,
-        end: 29700,
+        type: "Range",
+        start: 28070,
+        end: 28190,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 28190,
+        end: 28225,
+        label: "IBP",
+      },
+      {
+        type: "Range",
+        start: 28225,
+        end: 28300,
+        label: "Beacons",
+      },
+      {
+        type: "Range",
+        start: 29100,
+        end: 29200,
+        label: "FM Simplex",
+      },
+      {
+        type: "Range",
+        start: 29300,
+        end: 29510,
+        label: "Satellite Links",
+      },
+      {
+        type: "Range",
+        start: 29510,
+        end: 29520,
+        label: "Guard",
+      },
+      {
+        type: "Point",
+        frequency: 28055,
+        label: "QRS",
+        xOffset: -6,
+      },
+      {
+        type: "Point",
+        frequency: 28060,
+        label: "QRP",
+        xOffset: 6,
+      },
+      {
+        type: "Point",
+        frequency: 28330,
+        label: "Digital Voice",
+        xOffset: -2,
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 28360,
+        label: "SSB QRP",
+        labelWidth: 30,
+        xOffset: 2,
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 28680,
+        label: "Image",
+      },
+      {
+        type: "Point",
+        frequency: 29600,
+        label: "FM Call",
       },
     ],
   },
@@ -99,7 +158,7 @@ const bands = ref<Band[]>([
     subtitle: "12m",
     start: 24890,
     end: 24990,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -124,7 +183,37 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 24931,
-        end: 24990,
+        end: 24940,
+      },
+      {
+        type: "Range",
+        start: 24915,
+        end: 24929,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 24929,
+        end: 24931,
+        label: "IBP",
+      },
+      {
+        type: "Point",
+        frequency: 24906,
+        label: "QRP",
+      },
+      {
+        type: "Point",
+        frequency: 24950,
+        label: "SSB QRP",
+        yOffset: -14,
+      },
+      {
+        type: "Point",
+        frequency: 24960,
+        label: "Digital Voice",
+        labelWidth: 60,
+        yOffset: -14,
       },
     ],
   },
@@ -133,7 +222,7 @@ const bands = ref<Band[]>([
     subtitle: "15m",
     start: 21000,
     end: 21450,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -156,9 +245,61 @@ const bands = ref<Band[]>([
         end: 21120,
       },
       {
-        type: "DIGIMODE",
-        start: 21151,
-        end: 21450,
+        type: "Range",
+        start: 21070,
+        end: 21110,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 21120,
+        end: 21149,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 21149,
+        end: 21151,
+        label: "IBP",
+      },
+      {
+        type: "Point",
+        frequency: 21055,
+        label: "QRS",
+        xOffset: -2,
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 21060,
+        label: "QRP",
+        xOffset: 2,
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 21180,
+        label: "Digital Voice",
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 21285,
+        label: "SSB QRP",
+        labelWidth: 30,
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 21340,
+        label: "Image",
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 21360,
+        label: "Emergency",
+        yOffset: 1.5,
       },
     ],
   },
@@ -167,7 +308,7 @@ const bands = ref<Band[]>([
     subtitle: "17m",
     start: 18068,
     end: 18168,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -192,7 +333,43 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 18111,
-        end: 18168,
+        end: 18120,
+      },
+      {
+        type: "Range",
+        start: 18095,
+        end: 18109,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 18109,
+        end: 18111,
+        label: "IBP",
+      },
+      {
+        type: "Point",
+        frequency: 18086,
+        label: "QRP",
+      },
+      {
+        type: "Point",
+        frequency: 18130,
+        label: "SSB QRP",
+        yOffset: -14,
+      },
+      {
+        type: "Point",
+        frequency: 18150,
+        label: "Digital Voice",
+        labelWidth: 60,
+        yOffset: -14,
+      },
+      {
+        type: "Point",
+        frequency: 18160,
+        label: "Emergency",
+        yOffset: -14,
       },
     ],
   },
@@ -201,7 +378,7 @@ const bands = ref<Band[]>([
     subtitle: "20m",
     start: 14000,
     end: 14350,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -226,7 +403,73 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 14101,
-        end: 14350,
+        end: 14112,
+      },
+      {
+        type: "Range",
+        start: 14000,
+        end: 14060,
+        label: "CW Contest",
+      },
+      {
+        type: "Range",
+        start: 14070,
+        end: 14099,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 14099,
+        end: 14101,
+        label: "IBP",
+      },
+      {
+        type: "Range",
+        start: 14125,
+        end: 14300,
+        label: "SSB Contest",
+      },
+      {
+        type: "Range",
+        start: 14190,
+        end: 14200,
+        label: "DXpeditions",
+      },
+      {
+        type: "Point",
+        frequency: 14055,
+        label: "QRS",
+        xOffset: -2,
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 14060,
+        label: "QRP",
+        xOffset: 2,
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 14130,
+        label: "Digital Voice",
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 14230,
+        label: "Image",
+      },
+      {
+        type: "Point",
+        frequency: 14285,
+        label: "SSB QRP",
+      },
+      {
+        type: "Point",
+        frequency: 14300,
+        label: "Emergency",
+        yOffset: -14,
       },
     ],
   },
@@ -235,7 +478,7 @@ const bands = ref<Band[]>([
     subtitle: "30m",
     start: 10100,
     end: 10150,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -247,6 +490,18 @@ const bands = ref<Band[]>([
         start: 10130,
         end: 10150,
       },
+      {
+        type: "Range",
+        start: 10130,
+        end: 10150,
+        label: "Narrow",
+      },
+      {
+        type: "Point",
+        frequency: 10116,
+        label: "QRP",
+        yOffset: 1.5,
+      },
     ],
   },
   {
@@ -254,7 +509,7 @@ const bands = ref<Band[]>([
     subtitle: "40m",
     start: 7000,
     end: 7200,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -269,7 +524,58 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 7040,
+        end: 7060,
+      },
+      {
+        type: "Range",
+        start: 7040,
+        end: 7050,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 7060,
+        end: 7100,
+        label: "SSB Contest",
+      },
+      {
+        type: "Range",
+        start: 7130,
         end: 7200,
+        label: "SSB Contest",
+      },
+      {
+        type: "Range",
+        start: 7175,
+        end: 7200,
+        label: "DX",
+      },
+      {
+        type: "Point",
+        frequency: 7030,
+        label: "QRP",
+      },
+      {
+        type: "Point",
+        frequency: 7070,
+        label: "Digital Voice",
+        yOffset: -9,
+      },
+      {
+        type: "Point",
+        frequency: 7090,
+        label: "SSB QRP",
+      },
+      {
+        type: "Point",
+        frequency: 7100,
+        label: "Emergency",
+        yOffset: -14,
+      },
+      {
+        type: "Point",
+        frequency: 7165,
+        label: "Image",
       },
     ],
   },
@@ -278,7 +584,7 @@ const bands = ref<Band[]>([
     subtitle: "60m",
     start: 5351.5,
     end: 5366.5,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -291,9 +597,22 @@ const bands = ref<Band[]>([
         end: 5366,
       },
       {
-        type: "DIGIMODE",
+        type: "Range",
+        start: 5351.5,
+        end: 5354,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
         start: 5354,
         end: 5366,
+        label: "USB recommended",
+      },
+      {
+        type: "Range",
+        start: 5366,
+        end: 5366.5,
+        label: "20Hz",
       },
     ],
   },
@@ -302,7 +621,7 @@ const bands = ref<Band[]>([
     subtitle: "80m",
     start: 3500,
     end: 3800,
-    tickCount: [50],
+    tickCount: 50,
     segments: [
       {
         type: "CW",
@@ -317,7 +636,77 @@ const bands = ref<Band[]>([
       {
         type: "DIGIMODE",
         start: 3570,
+        end: 3620,
+      },
+      {
+        type: "Range",
+        start: 3500,
+        end: 3510,
+        label: "DX",
+      },
+      {
+        type: "Range",
+        start: 3510,
+        end: 3560,
+        label: "CW Contest",
+      },
+      {
+        type: "Range",
+        start: 3570,
+        end: 3600,
+        label: "Narrow",
+      },
+      {
+        type: "Range",
+        start: 3600,
+        end: 3650,
+        label: "SSB Contest",
+      },
+      {
+        type: "Range",
+        start: 3700,
         end: 3800,
+        label: "SSB Contest",
+      },
+      {
+        type: "Range",
+        start: 3775,
+        end: 3800,
+        label: "DX",
+      },
+      {
+        type: "Point",
+        frequency: 3555,
+        label: "QRS",
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 3560,
+        label: "QRP",
+        yOffset: 1.5,
+      },
+      {
+        type: "Point",
+        frequency: 3630,
+        label: "Digital Voice",
+        labelWidth: 60,
+        yOffset: -14,
+      },
+      {
+        type: "Point",
+        frequency: 3690,
+        label: "SSB QRP",
+      },
+      {
+        type: "Point",
+        frequency: 3735,
+        label: "Image",
+      },
+      {
+        type: "Point",
+        frequency: 3760,
+        label: "Emergency",
       },
     ],
   },
@@ -326,7 +715,7 @@ const bands = ref<Band[]>([
     subtitle: "160m",
     start: 1810,
     end: 2000,
-    tickCount: [34],
+    tickCount: 34,
     segments: [
       {
         type: "CW",
@@ -340,8 +729,19 @@ const bands = ref<Band[]>([
       },
       {
         type: "DIGIMODE",
+        start: 1840,
+        end: 1843,
+      },
+      {
+        type: "Range",
         start: 1838,
-        end: 2000,
+        end: 1840,
+        label: "Narrow",
+      },
+      {
+        type: "Point",
+        frequency: 1836,
+        label: "QRP",
       },
     ],
   },
@@ -350,7 +750,7 @@ const bands = ref<Band[]>([
 const addBand = () => {
   bands.value = [
     ...bands.value,
-    { title: "", subtitle: "", start: 0, end: 0, tickCount: [34] },
+    { title: "", subtitle: "", start: 0, end: 0, tickCount: 34 },
   ];
 
   activeAccordion.value = String(bands.value.length - 1);
@@ -512,7 +912,8 @@ const downloadPdf = () => {
                   <Label :for="`${bandIndex}-scale`">Scale</Label>
                   <Slider
                     :id="`${bandIndex}-scale`"
-                    v-model="band.tickCount"
+                    :model-value="[band.tickCount]"
+                    @update:model-value="(value) => (band.tickCount = value![0])"
                     :min="10"
                     :max="200"
                   />
@@ -535,6 +936,8 @@ const downloadPdf = () => {
                           <SelectItem value="CW">CW</SelectItem>
                           <SelectItem value="PHONE">PHONE</SelectItem>
                           <SelectItem value="DIGIMODE">DIGIMODE</SelectItem>
+                          <SelectItem value="Range">Range</SelectItem>
+                          <SelectItem value="Point">Point</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -549,6 +952,12 @@ const downloadPdf = () => {
                   </div>
                   <div class="flex gap-2">
                     <NumberField
+                      v-if="
+                        segment.type === 'CW' ||
+                        segment.type === 'PHONE' ||
+                        segment.type === 'DIGIMODE' ||
+                        segment.type === 'Range'
+                      "
                       :id="`${segmentIndex}-start`"
                       v-model="segment.start"
                       locale="de-DE"
@@ -561,6 +970,12 @@ const downloadPdf = () => {
                       </NumberFieldContent>
                     </NumberField>
                     <NumberField
+                      v-if="
+                        segment.type === 'CW' ||
+                        segment.type === 'PHONE' ||
+                        segment.type === 'DIGIMODE' ||
+                        segment.type === 'Range'
+                      "
                       :id="`${segmentIndex}-end`"
                       v-model="segment.end"
                       locale="de-DE"
@@ -572,6 +987,33 @@ const downloadPdf = () => {
                         <span class="text-zinc-500">kHz</span>
                       </NumberFieldContent>
                     </NumberField>
+                    <NumberField
+                      v-if="segment.type === 'Point'"
+                      :id="`${segmentIndex}-frequency`"
+                      v-model="segment.frequency"
+                      locale="de-DE"
+                      :min="0"
+                      class="grow"
+                    >
+                      <Label :for="`${segmentIndex}-frequency`"
+                        >Frequency</Label
+                      >
+                      <NumberFieldContent class="flex items-center gap-1">
+                        <NumberFieldInput />
+                        <span class="text-zinc-500">kHz</span>
+                      </NumberFieldContent>
+                    </NumberField>
+                  </div>
+                  <div
+                    v-if="segment.type === 'Range' || segment.type === 'Point'"
+                    class="grid w-full items-center gap-1.5"
+                  >
+                    <Label :for="`${segmentIndex}-label`">Label</Label>
+                    <Input
+                      v-model="segment.label"
+                      :id="`${segmentIndex}-subtitle`"
+                      placeholder="Label"
+                    />
                   </div>
                 </div>
                 <Button @click="addSegment(bandIndex)"
@@ -608,7 +1050,7 @@ const downloadPdf = () => {
               // GeistExtraBold: 'fonts/Geist-ExtraBold.ttf',
               GeistBold: 'fonts/Geist-Bold.ttf',
               // GeistSemiBold: 'fonts/Geist-SemiBold.ttf',
-              // GeistMedium: 'fonts/Geist-Medium.ttf',
+              GeistMedium: 'fonts/Geist-Medium.ttf',
               GeistRegular: 'fonts/Geist-Regular.ttf',
               // GeistLight: 'fonts/Geist-Light.ttf',
               // GeistExtraLight: 'fonts/Geist-ExtraLight.ttf',
@@ -684,7 +1126,7 @@ const downloadPdf = () => {
                 :subtitle="band.subtitle"
                 :start="band.start"
                 :end="band.end"
-                :tick-count="band.tickCount[0]"
+                :tick-count="band.tickCount"
                 :segments="band.segments"
               />
             </i-g>
