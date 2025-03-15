@@ -11,9 +11,10 @@ import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
 import iaruR1Bandplan from "@/assets/iaru-r1-bandplan.json";
 import BandEditor from "@/components/BandEditor.vue";
 import { Toaster } from "@/components/ui/sonner";
-import { useClipboard, useStorage } from "@vueuse/core";
+import { useClipboard, useResizeObserver, useStorage } from "@vueuse/core";
 import { compress, decompress } from "compress-json";
 import { toast } from "vue-sonner";
+import { usePDF, VuePDF } from "@tato30/vue-pdf";
 
 const title = useStorage("title", "IARU R1 HF Bandplan");
 const bandYOffset = useStorage("bandYOffset", [73]);
@@ -39,25 +40,15 @@ onMounted(() => {
 
 const pdfBlob = ref();
 
+const { pdf, print, download } = usePDF(pdfBlob);
+const pdfViewerRef = useTemplateRef("pdf-viewer");
+
+useResizeObserver(pdfViewerRef, () => {
+  pdfViewerRef.value?.reload();
+});
+
 const updatePdfBlob = (blob: Blob) => {
   pdfBlob.value = blob;
-};
-
-const pdfIframeRef = useTemplateRef("pdf-iframe");
-
-const printPdf = () => {
-  pdfIframeRef.value?.contentWindow?.print();
-};
-
-const downloadPdf = () => {
-  if (!pdfBlob.value) return;
-
-  const link = document.createElement("a");
-  link.href = pdfBlob.value;
-  link.download = `${title.value}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
 };
 
 const reset = () => {
@@ -112,10 +103,10 @@ const copyLink = () => {
           >
         </div>
         <div class="flex gap-2">
-          <Button variant="outline" @click="printPdf"
+          <Button variant="outline" @click="print"
             ><Printer class="w-4 h-4" />Print</Button
           >
-          <Button variant="outline" @click="downloadPdf"
+          <Button variant="outline" @click="download(title)"
             ><Download class="w-4 h-4" />PDF</Button
           >
           <DarkToggle />
@@ -143,13 +134,14 @@ const copyLink = () => {
           :ratio="1.414 / 1"
           class="bg-zinc-100 dark:bg-zinc-900 rounded-lg"
         >
-          <iframe
+          <!-- <iframe
             height="100%"
             width="100%"
             class="border-0"
             ref="pdf-iframe"
             :src="`${pdfBlob}#view=Fit&scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0`"
-          />
+          /> -->
+          <VuePDF :pdf="pdf" fit-parent ref="pdf-viewer" />
         </AspectRatio>
 
         <PdfFrame
