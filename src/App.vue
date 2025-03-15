@@ -103,7 +103,14 @@ const copyLink = () => {
       <div
         class="container mx-auto min-h-14 px-4 py-2 flex items-center justify-between flex-wrap gap-2"
       >
-        <h1 class="font-bold text-lg dark:text-zinc-50">Bandplan generator</h1>
+        <div class="flex grow items-center justify-between">
+          <h1 class="font-bold text-lg dark:text-zinc-50">
+            Bandplan generator
+          </h1>
+          <Button as="a" variant="link" href="https://ham.guide"
+            >ham.guide</Button
+          >
+        </div>
         <div class="flex gap-2">
           <Button variant="outline" @click="printPdf"
             ><Printer class="w-4 h-4" />Print</Button
