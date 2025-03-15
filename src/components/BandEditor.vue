@@ -17,6 +17,8 @@ import {
   NumberField,
   NumberFieldContent,
   NumberFieldInput,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
 } from "@/components/ui/number-field";
 import {
   Accordion,
@@ -42,9 +44,9 @@ const title = defineModel<string>("title", { required: true });
 const bandYOffset = defineModel<number[]>("bandYOffset", { required: true });
 const bands = defineModel<Band[]>("bands", { required: true });
 
-defineEmits<{
-  resetClick: void;
-  copyClick: void;
+const emit = defineEmits<{
+  resetClick: [];
+  copyClick: [];
 }>();
 
 const activeAccordion = ref();
@@ -55,7 +57,7 @@ const addBand = () => {
     { title: "", subtitle: "", start: 0, end: 0, tickCount: 34 },
   ];
 
-  activeAccordion.value = String(bands.value.length - 1);
+  activeAccordion.value = String(bands.value.length);
 };
 
 const removeBand = (indexToRemove: number) => {
@@ -73,7 +75,11 @@ const removeBand = (indexToRemove: number) => {
 const addSegment = (bandIndex: number) => {
   bands.value[bandIndex].segments = [
     ...(bands.value[bandIndex].segments || []),
-    { type: "CW", start: 0, end: 0 },
+    {
+      type: "CW",
+      start: bands.value[bandIndex].start,
+      end: bands.value[bandIndex].end,
+    },
   ];
 };
 
@@ -81,6 +87,11 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
   bands.value[bandIndex].segments = bands.value[bandIndex].segments?.filter(
     (_, index) => index !== segmentIndexToRemove
   );
+};
+
+const confirmReset = () => {
+  emit("resetClick");
+  activeAccordion.value = undefined;
 };
 </script>
 
@@ -105,9 +116,7 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction asChild @click="$emit('resetClick')">
-              Reset
-            </AlertDialogAction>
+            <AlertDialogAction @click="confirmReset">Reset</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -237,7 +246,9 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
                 :id="`${segmentIndex}-start`"
                 v-model="segment.start"
                 locale="de-DE"
-                :min="0"
+                :min="band.start"
+                :max="segment.end"
+                :default-value="band.start"
               >
                 <Label :for="`${segmentIndex}-start`">Start</Label>
                 <NumberFieldContent class="flex items-center gap-1">
@@ -255,7 +266,9 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
                 :id="`${segmentIndex}-end`"
                 v-model="segment.end"
                 locale="de-DE"
-                :min="0"
+                :min="segment.start"
+                :max="band.end"
+                :default-value="band.end"
               >
                 <Label :for="`${segmentIndex}-end`">End</Label>
                 <NumberFieldContent class="flex items-center gap-1">
@@ -268,7 +281,9 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
                 :id="`${segmentIndex}-frequency`"
                 v-model="segment.frequency"
                 locale="de-DE"
-                :min="0"
+                :min="band.start"
+                :max="band.end"
+                :default-value="band.start"
                 class="grow"
               >
                 <Label :for="`${segmentIndex}-frequency`">Frequency</Label>
@@ -288,6 +303,48 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
                 :id="`${segmentIndex}-subtitle`"
                 placeholder="Label"
               />
+            </div>
+            <NumberField
+              v-if="segment.type === 'Point'"
+              :id="`${segmentIndex}-labelWidth`"
+              v-model="segment.labelWidth"
+              :min="0"
+              :default-value="40"
+            >
+              <Label :for="`${segmentIndex}-labelWidth`">Label width</Label>
+              <NumberFieldContent>
+                <NumberFieldDecrement />
+                <NumberFieldInput />
+                <NumberFieldIncrement />
+              </NumberFieldContent>
+            </NumberField>
+            <div class="flex gap-2" v-if="segment.type === 'Point'">
+              <NumberField
+                :id="`${segmentIndex}-xOffset`"
+                v-model="segment.xOffset"
+                :default-value="0"
+                :step="0.1"
+              >
+                <Label :for="`${segmentIndex}-xOffset`">X Offset</Label>
+                <NumberFieldContent>
+                  <NumberFieldDecrement />
+                  <NumberFieldInput />
+                  <NumberFieldIncrement />
+                </NumberFieldContent>
+              </NumberField>
+              <NumberField
+                :id="`${segmentIndex}-yOffset`"
+                v-model="segment.yOffset"
+                :default-value="0"
+                :step="0.1"
+              >
+                <Label :for="`${segmentIndex}-yOffset`">Y Offset</Label>
+                <NumberFieldContent>
+                  <NumberFieldDecrement />
+                  <NumberFieldInput />
+                  <NumberFieldIncrement />
+                </NumberFieldContent>
+              </NumberField>
             </div>
           </div>
           <Button @click="addSegment(bandIndex)"
