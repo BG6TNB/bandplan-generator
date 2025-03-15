@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Label } from "@/components/ui/label";
 import Input from "@/components/ui/input/Input.vue";
-import { Plus, Trash } from "lucide-vue-next";
+import { Plus, Trash, RotateCcw, Link } from "lucide-vue-next";
 import type { Band } from "@/components/BandDiagram.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +24,28 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Slider from "@/components/ui/slider/Slider.vue";
 import { ref } from "vue";
 
 const title = defineModel<string>("title", { required: true });
 const bandYOffset = defineModel<number[]>("bandYOffset", { required: true });
 const bands = defineModel<Band[]>("bands", { required: true });
+
+defineEmits<{
+  resetClick: void;
+  copyClick: void;
+}>();
 
 const activeAccordion = ref();
 
@@ -70,6 +86,32 @@ const removeSegment = (bandIndex: number, segmentIndexToRemove: number) => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
+    <div class="flex gap-4">
+      <Button variant="default" class="grow" @click="$emit('copyClick')"
+        ><Link class="w-4 h-4" />Copy link</Button
+      >
+      <AlertDialog>
+        <AlertDialogTrigger as-child>
+          <Button variant="destructive">
+            <RotateCcw class="w-4 h-4" />Reset</Button
+          >
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will reset the bandplan to IARU R1 settings.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild @click="$emit('resetClick')">
+              Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
     <div class="grid w-full items-center gap-1.5">
       <Label for="input-title">Title</Label>
       <Input v-model="title" id="input-title" placeholder="Title" />

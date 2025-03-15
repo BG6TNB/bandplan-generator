@@ -38,6 +38,12 @@ const downloadPdf = () => {
   link.click();
   document.body.removeChild(link);
 };
+
+const reset = () => {
+  title.value = "IARU R1 HF Bandplan";
+  bandYOffset.value = [73];
+  bands.value = structuredClone(iaruR1Bandplan) as Band[];
+};
 </script>
 
 <template>
@@ -68,6 +74,7 @@ const downloadPdf = () => {
           v-model:title="title"
           v-model:band-y-offset="bandYOffset"
           v-model:bands="bands"
+          @reset-click="reset"
         />
       </aside>
       <div class="w-full h-full p-4">
