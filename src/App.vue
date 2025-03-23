@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from "vue";
+import { onMounted, ref, useTemplateRef, markRaw } from "vue";
 import { Download, Printer } from "lucide-vue-next";
 import PdfFrame from "@i2d/pdf-frame-vue";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
 
 import iaruR1Bandplan from "@/assets/iaru-r1-bandplan.json";
 import BandEditor from "@/components/BandEditor.vue";
+import FeedbackToast from "@/components/FeedbackToast.vue";
 import { Toaster } from "@/components/ui/sonner";
 import {
   useClipboard,
@@ -45,6 +46,13 @@ onMounted(() => {
     bandYOffset.value = decoded.bandYOffset;
     bands.value = decoded.bands;
   }
+});
+
+onMounted(() => {
+  toast(markRaw(FeedbackToast), {
+    duration: Infinity,
+    closeButton: true,
+  });
 });
 
 const pdfBlob = ref();
