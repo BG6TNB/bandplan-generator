@@ -4,6 +4,7 @@ import { Download, Printer } from "lucide-vue-next";
 import PdfFrame from "@i2d/pdf-frame-vue";
 import { Button } from "@/components/ui/button";
 
+import { usePostHog } from "@/composables/usePostHog";
 import AspectRatio from "@/components/ui/aspect-ratio/AspectRatio.vue";
 import DarkToggle from "@/components/DarkToggle.vue";
 import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
@@ -21,6 +22,8 @@ import {
 import { compress, decompress } from "compress-json";
 import { toast } from "vue-sonner";
 import { usePDF, VuePDF } from "@tato30/vue-pdf";
+
+usePostHog();
 
 const title = useStorage("title", "IARU R1 HF Bandplan");
 const bandYOffset = useStorage("bandYOffset", [73]);
