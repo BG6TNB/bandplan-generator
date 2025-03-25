@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, markRaw } from "vue";
-import { Download, Printer } from "lucide-vue-next";
+import { onMounted, ref, useTemplateRef } from "vue";
+import { Download, Printer, CircleHelp } from "lucide-vue-next";
 import PdfFrame from "@i2d/pdf-frame-vue";
 import { Button } from "@/components/ui/button";
 
@@ -11,18 +11,19 @@ import BandDiagram, { type Band } from "@/components/BandDiagram.vue";
 
 import iaruR1Bandplan from "@/assets/iaru-r1-bandplan.json";
 import BandEditor from "@/components/BandEditor.vue";
-import FeedbackToast from "@/components/FeedbackToast.vue";
 import { Toaster } from "@/components/ui/sonner";
 import {
   useClipboard,
   useResizeObserver,
   useStorage,
+  useUrlSearchParams,
   type MaybeComputedElementRef,
   type MaybeElement,
 } from "@vueuse/core";
 import { compress, decompress } from "compress-json";
 import { toast } from "vue-sonner";
 import { usePDF, VuePDF } from "@tato30/vue-pdf";
+import HelpDialog from "./components/HelpDialog.vue";
 
 usePostHog();
 
@@ -36,23 +37,18 @@ const colors = useStorage("colors", {
 });
 
 onMounted(() => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const data = urlParams.get("state");
-  if (!data) return;
+  type State = string | null;
+  const params = useUrlSearchParams("history");
+  const state = params.state as State;
+  if (!state) return;
 
-  const decoded = decompress(JSON.parse(atob(data)));
+  const decoded = decompress(JSON.parse(atob(state)));
   if (decoded) {
     title.value = decoded.title;
     bandYOffset.value = decoded.bandYOffset;
     bands.value = decoded.bands;
+    (params.state as State) = null;
   }
-});
-
-onMounted(() => {
-  toast(markRaw(FeedbackToast), {
-    duration: Infinity,
-    closeButton: true,
-  });
 });
 
 const pdfBlob = ref();
@@ -122,13 +118,14 @@ const copyLink = () => {
             >ham.guide</Button
           >
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
           <Button variant="outline" @click="print(150, title)"
             ><Printer class="w-4 h-4" />Print</Button
           >
           <Button variant="outline" @click="download(title)"
             ><Download class="w-4 h-4" />PDF</Button
           >
+          <HelpDialog />
           <DarkToggle />
         </div>
       </div>
