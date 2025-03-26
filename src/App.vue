@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, useTemplateRef } from "vue";
-import { Download, Printer, CircleHelp } from "lucide-vue-next";
+import { Download, Printer } from "lucide-vue-next";
 import PdfFrame from "@i2d/pdf-frame-vue";
 import { Button } from "@/components/ui/button";
 
