@@ -49,7 +49,9 @@ const handleOpenChange = (open: boolean) => {
         <li>Click "Copy link" to share your bandplan with others</li>
         <li>
           If you have any feedback, reach out to
-          <a href="mailto:ly1ja@vurk.lt" class="underline">ly1ja@vurk.lt</a>
+          <a href="mailto:ly1ja@vurk.lt" target="_blank" class="underline"
+            >ly1ja@vurk.lt</a
+          >
         </li>
       </ul>
       <DialogFooter class="sm:justify-start">
