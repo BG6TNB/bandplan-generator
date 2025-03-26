@@ -145,7 +145,7 @@ const copyLink = () => {
       </aside>
       <div class="w-full h-full p-4 pb-6 relative">
         <p class="text-sm text-zinc-500 absolute bottom-1 right-4">
-          Inspired by Tom S54G
+          Inspired by Tom S54G and Marc LY1JLO
         </p>
         <AspectRatio
           :ratio="1.414 / 1"
