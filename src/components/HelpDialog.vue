@@ -46,6 +46,15 @@ const handleOpenChange = (open: boolean) => {
         <li>
           You can adjust the CW/PHONE/DIGI segments, add Range and Point markers
         </li>
+        <li>
+          IBP means
+          <a
+            href="https://www.ncdxf.org/beacon/"
+            target="_blank"
+            class="underline"
+            >International Beacon Project</a
+          >
+        </li>
         <li>Click "Copy link" to share your bandplan with others</li>
         <li>
           If you have any feedback, reach out to
