@@ -166,8 +166,8 @@ const copyLink = () => {
             margin: 48,
             margins: { top: 40, bottom: 40 },
             fontRegister: {
-              GeistBold: 'fonts/Geist-Bold.ttf',
-              GeistMedium: 'fonts/Geist-Medium.ttf',
+              NotoSansSCBold: 'fonts/NotoSansSC-Bold.ttf',
+              NotoSansSCMedium: 'fonts/NotoSansSC-Medium.ttf',
             },
           }"
           class="hidden"
@@ -181,14 +181,14 @@ const copyLink = () => {
             <i-text
               :width="1143"
               :text="title"
-              :style="{ fill: '#000', font: '32px GeistBold' }"
+              :style="{ fill: '#000', font: '32px NotoSansSCBold' }"
             />
 
             <i-text
               :x="869"
               :y="19"
               text="CW"
-              :style="{ fill: '#000', font: '14px GeistBold' }"
+              :style="{ fill: '#000', font: '14px NotoSansSCBold' }"
             />
 
             <i-line
@@ -203,7 +203,7 @@ const copyLink = () => {
               :x="936"
               :y="19"
               text="PHONE"
-              :style="{ fill: '#000', font: '14px GeistBold' }"
+              :style="{ fill: '#000', font: '14px NotoSansSCBold' }"
             />
 
             <i-line
@@ -218,7 +218,7 @@ const copyLink = () => {
               :x="1028"
               :y="19"
               text="DIGIMODE"
-              :style="{ fill: '#000', font: '14px GeistBold' }"
+              :style="{ fill: '#000', font: '14px NotoSansSCBold' }"
             />
 
             <i-line
@@ -233,7 +233,7 @@ const copyLink = () => {
               :x="976"
               :y="0"
               text="© Domantas Vasiliauskas LY1JA"
-              :style="{ fill: '#000', font: '10px GeistMedium' }"
+              :style="{ fill: '#000', font: '10px NotoSansSCMedium' }"
             />
 
             <i-g

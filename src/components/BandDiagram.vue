@@ -158,7 +158,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :text="title"
     :style="{
       fill: '#000',
-      font: '18px GeistBold',
+      font: '18px NotoSansSCBold',
       align: 'right',
     }"
   />
@@ -170,7 +170,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :text="subtitle"
     :style="{
       fill: '#000',
-      font: '14px GeistBold',
+      font: '14px NotoSansSCBold',
       align: 'right',
     }"
   />
@@ -201,7 +201,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :text="start.toLocaleString('de-DE')"
     :style="{
       fill: '#000',
-      font: '12px GeistBold',
+      font: '12px NotoSansSCBold',
       align: 'center',
     }"
   />
@@ -221,7 +221,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :y="2"
     :width="80"
     :text="end.toLocaleString('de-DE')"
-    :style="{ fill: '#000', font: '12px GeistBold', align: 'center' }"
+    :style="{ fill: '#000', font: '12px NotoSansSCBold', align: 'center' }"
   />
 
   <!-- Small ticks -->
@@ -245,7 +245,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
     :width="80"
     :style="{
       fill: '#000',
-      font: '12px GeistBold',
+      font: '12px NotoSansSCBold',
       align: 'center',
     }"
   />
@@ -393,7 +393,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
       :y="60"
       :style="{
         fill: '#000',
-        font: '10px GeistMedium',
+        font: '10px NotoSansSCMedium',
       }"
     />
   </i-g>
@@ -422,7 +422,7 @@ function isPointSegment(segment: Segment): segment is PointSegment {
       :width="segment.labelWidth || 40"
       :style="{
         fill: '#000',
-        font: '7px GeistMedium',
+        font: '7px NotoSansSCMedium',
         align: 'center',
       }"
     />
